@@ -32,7 +32,8 @@ def make_map_fig(kwlist=[]):
 
 mapgraph=dcc.Graph(figure=make_map_fig(), id=MAPFIGID)
 articletable=dash_table.DataTable(id=ARTICLETID)
-sep=html.Hr(style={'margin-bottom': '0.2em', 'margin-top': '0.2em', 'thickness': '0px'}),
+
+sepstyle={'margin-bottom': '0.2em', 'margin-top': '0.2em', 'thickness': '0px'}
 app.layout = dbc.Container(
     [
         dcc.Store(id="store"),
@@ -41,7 +42,7 @@ app.layout = dbc.Container(
                 dbc.Card( html.H1("Dynamically rendered tab content", className = 'align-self-center'), ), 
                 width=12),
             ),
-        sep,
+        html.Hr(style=sepstyle),
         dbc.Row(
             dbc.Col(
                 dbc.Card( 
@@ -49,7 +50,7 @@ app.layout = dbc.Container(
                     ),
                 width=12),
         ),
-        sep,
+        html.Hr(style=sepstyle),
         dbc.Row(
             dbc.Col(
                 dbc.Card( 
@@ -57,14 +58,14 @@ app.layout = dbc.Container(
                     ),
                 width=12),
         ), 
-        sep,
+        html.Hr(style=sepstyle),
         dbc.Row(
             dbc.Col(
                 dbc.Card( 
                     children=[articletable]
                     ),
                 width=12),
-        ),         
+        ),    
 
     ]
 )
