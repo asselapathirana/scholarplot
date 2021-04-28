@@ -1,0 +1,23 @@
+Access mongodb with WSL (Ubuntu)
+1. Change the dns in wsl (https://superuser.com/questions/1533291/how-do-i-change-the-dns-settings-for-wsl2)
+2. Add a server from https://en.wikipedia.org/wiki/Public_recursive_name_server
+3. Copy a collection : 
+    db.articlescollection.find().forEach( function(x){db.articlescollection2.insert(x)}
+    
+    
+How to summarize data
+
+Aggrigation at inner list level:
+
+db.articlescollection2.aggregate([
+{$unwind:"$countries"},
+{$group:{"_id":"$countries","count":{$sum:1}}},
+{$group:{"_id":null,"country_details":{$push:{"countries":"$_id",
+                                               "count":"$count"}}}},
+{$project:{"_id":0,"country_details":1}}
+])
+        
+Update with date
+
+var myDate = new Date();
+db.articlescollection.update({}, {$set: {"qdate": myDate}},{upsert:false, multi:true})
