@@ -1,8 +1,35 @@
 from scholarly import scholarly, ProxyGenerator
 import argparse
 from pymongo import MongoClient
+import pandas as pd
+import os
 
-pg = ProxyGenerator()
+pg = ProxyGenerator() # this need to be global it seems. 
+
+
+def open_collection():
+    dbclient=connectDB(os.environ.get('DBPASSWD'), user=os.environ.get('DBUSER'))
+    db=dbclient["articles"]
+    dbcol=db["articlescollection"]
+    return dbcol
+
+def get_country_freq(dbcol, kwlist):
+    if kwlist and len(kwlist):
+        kwmatch=[{'keyword': x} for x in kwlist]
+        countryct=dbcol.aggregate(
+            [
+        { '$match': {'$or': kwmatch} },
+        {'$unwind':"$countries"},
+        {'$group':{"_id":"$countries","count":{'$sum':1}}},
+        {'$group':{"_id":'null',"country_details":{'$push':{"countries":"$_id",
+                                                       "count":"$count"}}}},
+        {'$project':{"_id":0,"country_details":1}}
+        ]).next()
+        countryndf=pd.DataFrame([[x['countries'], x['count']] for x in countryct['country_details']], columns=['country', 'count'])
+        return countryndf
+    else:
+        df=pd.DataFrame([['',0],['', 0]], columns=['country', 'count'])
+        return df
 
 def connect(API_KEY=None):
     if API_KEY and len(API_KEY)>10:

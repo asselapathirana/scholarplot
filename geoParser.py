@@ -34,5 +34,5 @@ if __name__=="__main__":
     vals=get_args()
     dbclient=loader.connectDB(password=vals.dbpassword)
     db=dbclient["articles"]
-    dbcol=db["articlescollection2"]
+    dbcol=db["articlescollection"]
     process_countries(dbcol, maxitems=vals.maxitems)
