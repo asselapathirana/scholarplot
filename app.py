@@ -1,3 +1,4 @@
+from flask import Flask
 import dash
 import plotly.express as px
 import dash_bootstrap_components as dbc
@@ -17,7 +18,8 @@ dbcol = loader.open_collection()
 keywords=dbcol.distinct('keyword')
 options = [{'label': x, 'value': x} for x in keywords]
 
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = Flask(__name__) # needed for dokku deploy with gunicorn 
+app = dash.Dash(__name__,server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 def make_map_fig(kwlist=[]):
 
