@@ -3,11 +3,10 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-import os
-import pandas as pd
 import dash_table 
+from logger import *
 
 import loader
 
@@ -31,7 +30,34 @@ def make_map_fig(kwlist=[]):
 
 
 mapgraph=dcc.Graph(figure=make_map_fig(), id=MAPFIGID)
-articletable=dash_table.DataTable(id=ARTICLETID)
+columns=[{"name": i, "id": i} for i in loader.COLUMNS_TO_SHOW]
+articletable=dash_table.DataTable(id=ARTICLETID, columns=columns,
+                                  fixed_rows={'headers': True},
+                                          style_table={#'height': '30vh', 
+                                                       'overflowY': 'auto', 
+                                                       'overflowX': 'auto'},
+                                          style_cell={
+                                                 'overflow': 'hidden',
+                                                 'textOverflow': 'ellipsis',
+                                                 'maxWidth': 0
+                                             },
+                                          style_data={
+                                              'whiteSpace': 'normal',
+                                              'height': 'auto',
+                                          },                                          
+                                          style_cell_conditional=[
+                                                  {'if': {'column_id': 'title'},
+                                                   'width': '40%'},
+                                                  {'if': {'column_id': 'pub_year'},
+                                                   'width': '10%'},        
+                                                  {'if': {'column_id': 'venue'},
+                                                   'width': '20%'},     
+                                                  {'if': {'column_id': 'author'},
+                                                   'width': '30%'},                                                   
+                                                  #['title', "author", 'journal', 'pub_year', 'venue']
+                                              ],
+                                          #row_selectable='single',                                  
+                                  )
 
 sepstyle={'margin-bottom': '0.2em', 'margin-top': '0.2em', 'thickness': '0px'}
 app.layout = dbc.Container(
@@ -79,9 +105,27 @@ def set_graph(keywords):
     #if not keywords or not len(keywords):
     #    raise PreventUpdate
     fig = make_map_fig(keywords)
+    fig.update_layout(clickmode='event+select')
     return fig
     
-
+@app.callback(
+    Output(component_id=ARTICLETID, component_property='data'),
+    Input(component_id=MAPFIGID, component_property='selectedData'),
+    Input(component_id=MAPFIGID, component_property='figure'),
+    State(component_id=KEYWORDDDID, component_property='value')
+)
+def load_articles(selected_countries, data, selected_keywords):
+    #if not selected_countries or not selected_keywords:
+    #    raise PreventUpdate
+    if selected_countries:
+        countries=[x['hovertext'] for x in selected_countries['points']]
+    else:
+        countries=[]
+    if not selected_keywords:
+        selected_keywords=[] 
+    logging.debug("selected countries: {}, keywords: {}".format(countries, selected_keywords))
+    results=loader.get_articles_countries_keywords(dbcol, countries, selected_keywords)
+    return results 
 
 if __name__ == "__main__":
     app.run_server(debug=True, port=8888)

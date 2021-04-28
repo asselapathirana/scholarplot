@@ -4,8 +4,10 @@ from pymongo import MongoClient
 import pandas as pd
 import os
 
-pg = ProxyGenerator() # this need to be global it seems. 
+from logger import *
 
+pg = ProxyGenerator() # this need to be global it seems. 
+COLUMNS_TO_SHOW=['title', "author",  'pub_year', 'venue']
 
 def open_collection():
     dbclient=connectDB(os.environ.get('DBPASSWD'), user=os.environ.get('DBUSER'))
@@ -30,6 +32,18 @@ def get_country_freq(dbcol, kwlist):
     else:
         df=pd.DataFrame([['',0],['', 0]], columns=['country', 'count'])
         return df
+    
+    
+def get_articles_countries_keywords(dbcol, countries, keywords):
+        query={ '$and':[{ "countries": {'$in':countries,},},
+                        { "keyword": {'$in'   :keywords ,},},
+                        ]}
+        columns=COLUMNS_TO_SHOW
+        cols={col:1 for col in columns}
+        result=list(dbcol.find(query,cols))
+        result=[{k: v for k, v in d.items() if k != '_id'} for d in result]
+        logging.debug("query results: {}".format(str(result)))
+        return result
 
 def connect(API_KEY=None):
     if API_KEY and len(API_KEY)>10:
