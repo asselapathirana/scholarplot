@@ -27,6 +27,11 @@ e.g. [Mordecai](https://github.com/openeventdata/mordecai), [geography3](https:/
 * It's also possible to select several countries. Either SHIFT+Click on the map or use the select tools (top-right). 
 * Click on the link below each record to see it on google scholar. 
 
+## What is missing
+* Many publications concerning the United States of America, typically does not write the country name (e.g. A statewide assessment of mercury dynamics in North Carolina water bodies and fish). 
+NLP tools are usually smart enough to detect these (North Carolina is in the USA so tag as 'USA'), but the current (demo) implementation misses some obscure names. 
+* 'The United Kingdom vs. England' tagging is complicated. This issue has to be fixed (That's why no articles are tagged for England).
+
 ## Next step?
 This demo provides a framework for Natural Language Processing of online material to make sense of information (e.g. geoparsing). 
 It combines several Big-data constructs (Unstructured data, NoSQL (Jason) data lakes, NLP tricks). 
@@ -38,8 +43,6 @@ With large scale applications some of the possibilities are:
 * Locate 'hotspots' as well as locations with few (or no) studies (geographical gaps)
 
 (After reading, click on the cross (top right) to get this message out of the way.)
-
-
 
 """)
 
