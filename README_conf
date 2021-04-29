@@ -1,3 +1,9 @@
+Set timeouts
+#https://github.com/danielslee/dokku-nginx-proxy-timeout
+
+sudo dokku plugin:install https://github.com/danielslee/dokku-nginx-proxy-timeout.git
+dokku config:set PROXY_TIMEOUT=300s
+
 Access mongodb with WSL (Ubuntu)
 1. Change the dns in wsl (https://superuser.com/questions/1533291/how-do-i-change-the-dns-settings-for-wsl2)
 2. Add a server from https://en.wikipedia.org/wiki/Public_recursive_name_server
