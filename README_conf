@@ -1,8 +1,20 @@
+git push srv main:master
+
 Set timeouts
 #https://github.com/danielslee/dokku-nginx-proxy-timeout
 
 sudo dokku plugin:install https://github.com/danielslee/dokku-nginx-proxy-timeout.git
 dokku config:set PROXY_TIMEOUT=300s
+
+Logs to external storage (/app/data)
+ dokku storage:mount /opt/dokku/gs/data:/app/data
+dokku storage:report gs       
+
+Set the environment variables 
+
+dokku config:set gs DBUSER=reader DBPASSWD=****
+** ALSO make sure that the mongodb access is given to server ip
+
 
 Access mongodb with WSL (Ubuntu)
 1. Change the dns in wsl (https://superuser.com/questions/1533291/how-do-i-change-the-dns-settings-for-wsl2)
