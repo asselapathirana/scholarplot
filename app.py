@@ -13,6 +13,7 @@ from instructions import _instructions
 
 import loader
 
+
 MAPFIGID='map_figure_id'
 KEYWORDDDID='keyword_dropdown_id'
 ARTICLELISTCARD='article_table_id'

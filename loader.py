@@ -9,6 +9,9 @@ from logger import *
 pg = ProxyGenerator() # this need to be global it seems. 
 COLUMNS_TO_SHOW=['title', "author",  'pub_year', 'venue']
 ALLCOUNTRIES=['All Countries']
+_GEOTEXT='geotext'
+_MORDECAI='mordecai'
+GEOPARSER={_GEOTEXT:0, _MORDECAI:1}
 
 def open_collection():
     dbclient=connectDB(os.environ.get('DBPASSWD'), user=os.environ.get('DBUSER'))
