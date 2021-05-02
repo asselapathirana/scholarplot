@@ -6,7 +6,7 @@ from geotext import GeoText
 
 
 def process_countries(collection, maxitems=sys.maxsize, method=loader._GEOTEXT):
-    
+    print("starting ... ")    
     if method==loader._MORDECAI:
         import pycountry
         from mordecai import Geoparser
@@ -15,14 +15,27 @@ def process_countries(collection, maxitems=sys.maxsize, method=loader._GEOTEXT):
     for document in collection.find(): 
         abst=" "+document['abstract'] if 'abstract' in document else ''
         text=document['title']+abst
+        try:
+            document["countries2"]
+        except:
+            document["countries2"]={}
         if method==loader._GEOTEXT:
+            print("gt: {}".format(nn))
             gt=GeoText(text)
             gt=gt.countries
-            document["countries"][loader._GEOTEXT]=gt
+            document["countries2"][loader._GEOTEXT]=gt
         elif method==loader._MORDECAI:
-            pp=geo.geoparse(text)
-            gt=[pycountry.countries.get(alpha_3=x['country_predicted']).name for x in pp]
-            document["countries"][loader._MORDECAI]=gt
+            pp=mordecai_parser.geoparse(text)
+            try:
+                gt=[pycountry.countries.get(alpha_3=x['country_predicted']).name for x in pp]
+            except: 
+                st=str([x['country_predicted'] for x in pp])
+                print("countries: {}".format(st))
+            print("mo: {}".format(nn))
+            document["countries2"][loader._MORDECAI]=gt
+        else:
+            print("no method!")
+
         qq={'_id': document['_id']}
         collection.update(qq, document)
         nn+=1
@@ -48,4 +61,4 @@ if __name__=="__main__":
     dbclient=loader.connectDB(password=vals.dbpassword)
     db=dbclient["articles"]
     dbcol=db["articlescollection"]
-    process_countries(dbcol, maxitems=vals.maxitems, GEOPARSER[vals.method])
+    process_countries(dbcol, maxitems=vals.maxitems, method=vals.method)
