@@ -11,17 +11,18 @@ Python provides all the tools needed to do Natural Language Processing, includin
 *	Web scraping e.g. [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
 *	Parsing and identifying entities e.g. [NLTK toolkit](https://www.nltk.org/)
 *	Flag geographical locations mentioned in the text and geolocating them (Geoparsing) 
-e.g. [Mordecai](https://github.com/openeventdata/mordecai), [geography3](https://pypi.org/project/geograpy3/) and 
-(simple)[geotext] (https://pypi.org/project/geotext/).  
+e.g. [Mordecai](https://github.com/openeventdata/mordecai), [CLAVIN](https://github.com/Novetta/CLAVIN), [geography3](https://pypi.org/project/geograpy3/) and 
+ [geotext] (https://pypi.org/project/geotext/) (simple).  
 
 ## What it does
 * Downloads Google Scholar search hits for each keyword (In this demo, I have limited each to 500 top hits, to keep things simple)
 * Store them in a NoSQL database (MongoDB)
-* Run a geoparser (geotext in this case) to locate mentions of countries in the title or the abstract. 
+* Run geoparsers (geotext and mordecai in this case) to locate mentions of countries in the title or the abstract. 
 * Feed the data to this app, so that the user can interactively look at them. 
 
 ## How to use
 * (After closing these instructions) Select a keyword. The locations of the publications will be shown on the map. A list of all the publications will be shown below the map. 
+* Change the geoparsing engine and see how it changes the results. 
 * Click on the bubbles on the map to filter by country. Then the list will be updated to cover only that country. 
 * It is possible to select more than one keyword (simply select from the dropdown list)
 * It's also possible to select several countries. Either SHIFT+Click on the map or use the select tools (top-right). 

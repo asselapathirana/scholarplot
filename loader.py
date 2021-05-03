@@ -19,30 +19,33 @@ def open_collection():
     dbcol=db["articlescollection"]
     return dbcol
 
-def get_country_freq(dbcol, kwlist):
+def get_country_freq(dbcol, kwlist, engine):
     if kwlist and len(kwlist):
         kwmatch=[{'keyword': x} for x in kwlist]
         countryct=dbcol.aggregate(
             [
         { '$match': {'$or': kwmatch} },
-        {'$unwind':"$countries"},
-        {'$group':{"_id":"$countries","count":{'$sum':1}}},
-        {'$group':{"_id":'null',"country_details":{'$push':{"countries":"$_id",
+        {'$unwind':"$countries2.{}".format(engine)},
+        {'$group':{"_id":"$countries2.{}".format(engine),"count":{'$sum':1}}},
+        {'$group':{"_id":'null',"country_details":{'$push':{"countries2":"$_id",
                                                        "count":"$count"}}}},
         {'$project':{"_id":0,"country_details":1}}
         ]).next()
-        countryndf=pd.DataFrame([[x['countries'], x['count']] for x in countryct['country_details']], columns=['country', 'count'])
+        logging.debug("countryct results: {}".format(countryct))
+        countryndf=pd.DataFrame([[x['countries2'], x['count']] for x in countryct['country_details']], columns=['country', 'count'])
+        logging.debug("countrydf: {}".format(countryndf.to_string()))
         return countryndf
     else:
         df=pd.DataFrame([['',0],['', 0]], columns=['country', 'count'])
         return df
     
     
-def get_articles_countries_keywords(dbcol, countries, keywords):
+def get_articles_countries_keywords(dbcol, countries, keywords, engine):
     if countries==ALLCOUNTRIES:
         query={ "keyword": {'$in'   :keywords}}
     else:
-        query={ '$and':[{ "countries": {'$in':countries,},},
+        logging.debug("countries: {}, engine: {}".format(countries, engine))
+        query={ '$and':[{ "countries2.{}".format(engine): {'$in':countries,},},
                     { "keyword": {'$in'   :keywords ,},},
                     ]}
     columns=COLUMNS_TO_SHOW
