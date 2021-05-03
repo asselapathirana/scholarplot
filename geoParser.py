@@ -27,7 +27,9 @@ def process_countries(collection, maxitems=sys.maxsize, method=loader._GEOTEXT):
         elif method==loader._MORDECAI:
             pp=mordecai_parser.geoparse(text)
             try:
-                gt=[pycountry.countries.get(alpha_3=x['country_predicted']).name for x in pp]
+                ct=[x['country_predicted'] for x in pp]
+                ct=filter(lambda x: x!='' and x!='NA' , ct)
+                gt=[pycountry.countries.get(alpha_3=x).name for x in ct]
             except: 
                 st=str([x['country_predicted'] for x in pp])
                 print("countries: {}".format(st))
