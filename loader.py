@@ -42,7 +42,9 @@ def get_country_freq(dbcol, kwlist, engine):
     
 def get_articles_countries_keywords(dbcol, countries, keywords, engine):
     if countries==ALLCOUNTRIES:
-        query={ "keyword": {'$in'   :keywords}}
+        query={ '$and':[{ "countries2.{}".format(engine): { '$exists': 'true', '$ne': [] },},
+                    { "keyword": {'$in'   :keywords ,},},
+                    ]}
     else:
         logging.debug("countries: {}, engine: {}".format(countries, engine))
         query={ '$and':[{ "countries2.{}".format(engine): {'$in':countries,},},
